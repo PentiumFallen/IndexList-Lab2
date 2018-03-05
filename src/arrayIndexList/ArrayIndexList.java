@@ -13,21 +13,36 @@ public class ArrayIndexList<E> implements IndexList<E> {
 		element = (E[]) new Object[INITCAP]; 
 		size = 0; 
 	} 
-	
+
 
 	public void add(int index, E e) throws IndexOutOfBoundsException {
 		// ADD CODE AS REQUESTED BY EXERCISES
+		if (index<0||index>size) throw new IndexOutOfBoundsException("add: invalid index = "+index);
+		if (size==element.length){
+			changeCapacity(CAPTOAR);
+		}
+		if (index<size){
+			moveDataOnePositionTR(index, size-1);
+		}
+		element[index]=e;
+		size++;
 	}
 
 
 	public void add(E e) {
 		// ADD CODE AS REQUESTED BY EXERCISES
+		if (size==element.length){
+			changeCapacity(CAPTOAR);
+		}
+		element[size]=e;
+		size++;
 	}
 
 
 	public E get(int index) throws IndexOutOfBoundsException {
 		// ADD AND MODIGY CODE AS REQUESTED BY EXERCISES
-		return null; 
+		if (index<0||index>=size) throw new IndexOutOfBoundsException("get: invalid index = "+index);
+		return element[index]; 
 	}
 
 
@@ -38,12 +53,17 @@ public class ArrayIndexList<E> implements IndexList<E> {
 
 	public E remove(int index) throws IndexOutOfBoundsException {
 		// ADD AND MODIFY CODE AS REQUESTED BY EXERCISES
+		if (index<0||index>=size) throw new IndexOutOfBoundsException("remove: invalid index = "+index);
+		size--;
 		return null;
 	}
 
 
 	public E set(int index, E e) throws IndexOutOfBoundsException {
 		// ADD AND MODIFY CODE AS REQUESTED BY EXERCISES
+		if (index<0||index>=size) throw new IndexOutOfBoundsException("set: invalid index = "+index);
+//		E removed=element[index];
+//		element[index]=e;
 		return null;
 	}
 
@@ -51,16 +71,16 @@ public class ArrayIndexList<E> implements IndexList<E> {
 	public int size() {
 		return size;
 	}	
-	
-	
-	
+
+
+
 	// private methods  -- YOU CAN NOT MODIFY ANY OF THE FOLLOWING
 	// ... ANALYZE AND USE WHEN NEEDED
-	
+
 	// you should be able to decide when and how to use
 	// following method.... BUT NEED TO USE THEM WHENEVER
 	// NEEDED ---- THIS WILL BE TAKEN INTO CONSIDERATION WHEN GRADING
-	
+
 	private void changeCapacity(int change) { 
 		int newCapacity = element.length + change; 
 		E[] newElement = (E[]) new Object[newCapacity]; 
@@ -70,7 +90,7 @@ public class ArrayIndexList<E> implements IndexList<E> {
 		} 
 		element = newElement; 
 	}
-	
+
 	// useful when adding a new element with the add
 	// with two parameters....
 	private void moveDataOnePositionTR(int low, int sup) { 
