@@ -1,14 +1,17 @@
 package arrayIndexList;
 
+import java.lang.reflect.Array;
+
 import indexList.IndexList;
 
 public class ArrayIndexList<E> implements IndexList<E> {
-	private static final int INITCAP = 5; 
-	private static final int CAPTOAR = 5; 
-	private static final int MAXEMPTYPOS = 10; 
+	private static final int INITCAP = 1; 
+	private static final int CAPTOAR = 1; 
+	private static final int MAXEMPTYPOS = 2; 
 	private E[] element; 
 	private int size; 
 
+	@SuppressWarnings("unchecked")
 	public ArrayIndexList() { 
 		element = (E[]) new Object[INITCAP]; 
 		size = 0; 
@@ -54,17 +57,22 @@ public class ArrayIndexList<E> implements IndexList<E> {
 	public E remove(int index) throws IndexOutOfBoundsException {
 		// ADD AND MODIFY CODE AS REQUESTED BY EXERCISES
 		if (index<0||index>=size) throw new IndexOutOfBoundsException("remove: invalid index = "+index);
+		E removed=element[index];
+		moveDataOnePositionTL(index+1, size-1);
 		size--;
-		return null;
+		if (element.length-size>MAXEMPTYPOS) {
+			changeCapacity(-CAPTOAR);
+		}
+		return removed;
 	}
 
 
 	public E set(int index, E e) throws IndexOutOfBoundsException {
 		// ADD AND MODIFY CODE AS REQUESTED BY EXERCISES
 		if (index<0||index>=size) throw new IndexOutOfBoundsException("set: invalid index = "+index);
-//		E removed=element[index];
-//		element[index]=e;
-		return null;
+		E removed=element[index];
+		element[index]=e;
+		return removed;
 	}
 
 
@@ -81,6 +89,7 @@ public class ArrayIndexList<E> implements IndexList<E> {
 	// following method.... BUT NEED TO USE THEM WHENEVER
 	// NEEDED ---- THIS WILL BE TAKEN INTO CONSIDERATION WHEN GRADING
 
+	@SuppressWarnings("unchecked")
 	private void changeCapacity(int change) { 
 		int newCapacity = element.length + change; 
 		E[] newElement = (E[]) new Object[newCapacity]; 
@@ -109,15 +118,27 @@ public class ArrayIndexList<E> implements IndexList<E> {
 
 	// The following two methods are to be implemented as part of an exercise
 	public Object[] toArray() {
-		// TODO es in Exercise 3
-		return null;
+		Object[] newElement = new Object[this.size()];
+		for (int i = 0; i < element.length; i++) {
+			newElement[i]=element[i];
+		}
+		return newElement;
 	}
 
-
-	@Override
 	public <T1> T1[] toArray(T1[] array) {
-		// TODO as in Exercise 3
-		return null;
+		if (array.length < this.size()) {
+			array = (T1[]) Array.newInstance(array.getClass().getComponentType(), this.size());
+		}
+		for (int i=0; i<size; i++) {
+			array[i]=(T1) element[i];
+		}
+		for (int j=this.size; j<array.length; j++) {
+			array[j]=null;
+		}
+		return (T1[]) array;
 	}
 
+	public int capacity() {
+		return element.length;
+	}
 }
